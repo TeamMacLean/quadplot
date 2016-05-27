@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Quad Plot</string>
+    <string name="action_settings">Settings</string>
+    <string name="gps_label">GPS accuracy:</string>
+    <string name="gps_connecting">Connecting to GPS...</string>
+
+
+    <string name="hello_world">Hello world!</string>
+
+    <string-array name="drone_connection_types">
+        <item>USB</item>
+        <item>UDP</item>
+    </string-array>
+</resources>
