@@ -1,39 +1,27 @@
 package com.wookoouk.quadplot;
 
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.GoogleMap;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
-import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
-import com.o3dr.services.android.lib.drone.connection.ConnectionType;
+
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements DroneListener, TowerListener {
+public class MainActivity extends FragmentActivity implements DroneListener, TowerListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MinimumGPSAccuracy = 50; //lower is better
@@ -41,179 +29,96 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
     private ListView mListView;
     private TextView gpsText;
     private Location currentLocation;
-    private FloatingActionButton fab;
+//    private FloatingActionButton fab;
     private ArrayList<String> listItems = new ArrayList<String>();
     private ArrayList<Location> locations = new ArrayList<Location>();
     private Drone drone;
     private ControlTower controlTower;
     private final Handler handler = new Handler();
     private static final int DEFAULT_USB_BAUD_RATE = 57600;
-    private GoogleMap mMap;
 
 
-    private boolean viewingSetup = true;
-    private boolean viewingPlan = false;
+
+    private void viewConnect() {
+        // Create a new Fragment to be placed in the activity layout
+        ConnectFragment firstFragment = new ConnectFragment();
+
+        // In case this activity was started with special instructions from an
+        // Intent, pass the Intent's extras to the fragment as arguments
+        firstFragment.setArguments(getIntent().getExtras());
+
+        // Add the fragment to the 'fragment_container' FrameLayout
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, firstFragment)
+                .commit();
+    }
+
+    private void updateConnectedButton(Boolean isConnected) {
+
+//        if (viewingSetup) {
+//            FloatingActionButton connectButton = (FloatingActionButton) findViewById(R.id.btnConnect);
+//            if (isConnected) {
+//                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_connected_icon_36dp));
+//                if (!viewingPlan) {
+//                    viewPlan();
+//                }
+//            } else {
+//                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_disconnected_icon_36dp));
+//                if (!viewingSetup) {
+//                    viewSetup();
+//                }
+//            }
+//        }
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-        viewSetup();
-        viewPlan();
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 
-    }
+        //Title and subtitle
+        toolbar.setTitle("QuadPlot");
+        toolbar.setSubtitle("Please don't crash...");
+        toolbar.setNavigationIcon(R.drawable.quadplot);
 
-    private void viewMap() {
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
 
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-
-    }
-
-    private void viewSetup() {
-        viewingSetup = true;
-        viewingPlan = false;
-        setContentView(R.layout.setup);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        fab = (FloatingActionButton) findViewById(R.id.btnConnect);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBtnConnectTap();
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
             }
-        });
 
-        final Context context = getApplicationContext();
-        this.controlTower = new ControlTower(context);
-        this.drone = new Drone();
+            // Go to this view first
+            viewConnect();
 
-        if (this.drone.isConnected()) {
-            viewPlan(); //TODO this.drone.isConnected() is not ALWAYS correct
         }
-    }
-
-    private void viewPlan() {
-        viewingPlan = true;
-        viewingSetup = false;
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addToList(view);
-            }
-        });
-
-        if (mListView == null) {
-            mListView = (ListView) findViewById(R.id.plot_list);
-        }
-
-        listItems.add("Take Off");
-        listItems.add("Return to land");
-
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                listItems);
-        setListAdapter(adapter);
-
-        initGPS();
-
-    }
-
-    private void initGPS() {
-
-        gpsText = (TextView) findViewById(R.id.gps_text);
-        gpsText.setText(getText(R.string.gps_connecting));
-
-
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-
-            public void onLocationChanged(Location location) {
-                gpsText.setText(getText(R.string.gps_label) + " " + location.getAccuracy());
-                currentLocation = location;
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-    }
-
-
-    private void addToList(View v) {
-
-        if (currentLocation != null) {
-            if (currentLocation.getAccuracy() < MinimumGPSAccuracy) {
-                listItems.add(listItems.size()-1, "Plot " + (locations.size() + 1));
-                locations.add(currentLocation);
-                adapter.notifyDataSetChanged();
-            } else {
-                Snackbar.make(v, currentLocation.getAccuracy() + "/" + MinimumGPSAccuracy, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        } else {
-            Snackbar.make(v, getText(R.string.gps_connecting), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
-    }
-
-    private ListView getListView() {
-        if (mListView == null) {
-            mListView = (ListView) findViewById(R.id.plot_list);
-        }
-        return mListView;
-    }
-
-    private void setListAdapter(ListAdapter adapter) {
-        getListView().setAdapter(adapter);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) { //TODO reset plots
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { //TODO reset plots
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        this.controlTower.connect(this);
+//        if (this.controlTower == null) {
+//            this.controlTower.connect(this);
+//        }
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (this.drone.isConnected()) {
-            this.drone.disconnect();
-            updateConnectedButton(false);
-        }
-
-        this.controlTower.unregisterDrone(this.drone);
-        this.controlTower.disconnect();
+//        if (this.drone.isConnected()) {
+//            this.drone.disconnect();
+//            updateConnectedButton(false);
+//        }
+//
+//        this.controlTower.unregisterDrone(this.drone);
+//        this.controlTower.disconnect();
     }
 
     @Override
@@ -221,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         alertUser("Connection Failed:" + result.getErrorMessage());
         updateConnectedButton(this.drone.isConnected());
     }
-
 
     @Override
     public void onDroneEvent(String event, Bundle extras) {
@@ -243,12 +147,6 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         }
     }
 
-
-    private void alertUser(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-        Log.d(TAG, message);
-    }
-
     @Override
     public void onDroneServiceInterrupted(String errorMsg) {
         updateConnectedButton(this.drone.isConnected());
@@ -268,34 +166,8 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         alertUser("3DR Service Interrupted");
     }
 
-    private void onBtnConnectTap() {
-        if (this.drone.isConnected()) {
-            this.drone.disconnect();
-        } else {
-            Bundle extraParams = new Bundle();
-            extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, DEFAULT_USB_BAUD_RATE); // Set default baud rate to 57600
-
-            ConnectionParameter connectionParams = new ConnectionParameter(0, extraParams, null);
-            this.drone.connect(connectionParams);
-        }
-    }
-
-
-    private void updateConnectedButton(Boolean isConnected) {
-
-        if (viewingSetup) {
-            FloatingActionButton connectButton = (FloatingActionButton) findViewById(R.id.btnConnect);
-            if (isConnected) {
-                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_connected_icon_36dp));
-                if (!viewingPlan) {
-                    viewPlan();
-                }
-            } else {
-                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_disconnected_icon_36dp));
-                if (!viewingSetup) {
-                    viewSetup();
-                }
-            }
-        }
+    private void alertUser(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, message);
     }
 }
