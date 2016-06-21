@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 public class ConnectFragment extends android.support.v4.app.Fragment {
 
+    private boolean connected = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

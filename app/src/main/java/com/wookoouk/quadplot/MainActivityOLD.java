@@ -65,6 +65,9 @@
 //        setContentView(R.layout.setup);
 //
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setTitle("QuadPlot");
+//        toolbar.setSubtitle("Please don't crash...");
+//        toolbar.setNavigationIcon(R.drawable.quadplot);
 //        setSupportActionBar(toolbar);
 //
 //        fab = (FloatingActionButton) findViewById(R.id.btnConnect);

@@ -10,7 +10,6 @@ import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,19 +23,18 @@ import java.util.ArrayList;
 public class MainActivity extends FragmentActivity implements DroneListener, TowerListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int MinimumGPSAccuracy = 50; //lower is better
-    private ArrayAdapter<String> adapter;
-    private ListView mListView;
-    private TextView gpsText;
-    private Location currentLocation;
+    //    private static final int MinimumGPSAccuracy = 50; //lower is better
+//    private ArrayAdapter<String> adapter;
+//    private ListView mListView;
+//    private TextView gpsText;
+//    private Location currentLocation;
 //    private FloatingActionButton fab;
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ArrayList<Location> locations = new ArrayList<Location>();
+//    private ArrayList<String> listItems = new ArrayList<String>();
+//    private ArrayList<Location> locations = new ArrayList<Location>();
     private Drone drone;
     private ControlTower controlTower;
     private final Handler handler = new Handler();
-    private static final int DEFAULT_USB_BAUD_RATE = 57600;
-
+//    private static final int DEFAULT_USB_BAUD_RATE = 57600;
 
 
     private void viewConnect() {
@@ -76,11 +74,11 @@ public class MainActivity extends FragmentActivity implements DroneListener, Tow
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //Title and subtitle
         toolbar.setTitle("QuadPlot");
-        toolbar.setSubtitle("Please don't crash...");
+        toolbar.setSubtitle("Disconnected");
         toolbar.setNavigationIcon(R.drawable.quadplot);
 
         // Check that the activity is using the layout version with
