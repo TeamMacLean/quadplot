@@ -1,171 +1,111 @@
 package com.wookoouk.quadplot;
 
-import com.o3dr.android.client.ControlTower;
-import com.o3dr.android.client.Drone;
-import com.o3dr.android.client.interfaces.DroneListener;
-import com.o3dr.android.client.interfaces.TowerListener;
-import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
-import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
-
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import java.util.ArrayList;
-
-public class MainActivity extends FragmentActivity implements DroneListener, TowerListener {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-    //    private static final int MinimumGPSAccuracy = 50; //lower is better
-//    private ArrayAdapter<String> adapter;
-//    private ListView mListView;
-//    private TextView gpsText;
-//    private Location currentLocation;
-//    private FloatingActionButton fab;
-//    private ArrayList<String> listItems = new ArrayList<String>();
-//    private ArrayList<Location> locations = new ArrayList<Location>();
-    private Drone drone;
-    private ControlTower controlTower;
-    private final Handler handler = new Handler();
-//    private static final int DEFAULT_USB_BAUD_RATE = 57600;
-
-
-    private void viewConnect() {
-        // Create a new Fragment to be placed in the activity layout
-        ConnectFragment firstFragment = new ConnectFragment();
-
-        // In case this activity was started with special instructions from an
-        // Intent, pass the Intent's extras to the fragment as arguments
-        firstFragment.setArguments(getIntent().getExtras());
-
-        // Add the fragment to the 'fragment_container' FrameLayout
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, firstFragment)
-                .commit();
-    }
-
-    private void updateConnectedButton(Boolean isConnected) {
-
-//        if (viewingSetup) {
-//            FloatingActionButton connectButton = (FloatingActionButton) findViewById(R.id.btnConnect);
-//            if (isConnected) {
-//                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_connected_icon_36dp));
-//                if (!viewingPlan) {
-//                    viewPlan();
-//                }
-//            } else {
-//                connectButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_network_disconnected_icon_36dp));
-//                if (!viewingSetup) {
-//                    viewSetup();
-//                }
-//            }
-//        }
-    }
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        //Title and subtitle
-        toolbar.setTitle("QuadPlot");
-        toolbar.setSubtitle("Disconnected");
-        toolbar.setNavigationIcon(R.drawable.quadplot);
-
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (findViewById(R.id.fragment_container) != null) {
-
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
+        });
 
-            // Go to this view first
-            viewConnect();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-//        if (this.controlTower == null) {
-//            this.controlTower.connect(this);
-//        }
-
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-//        if (this.drone.isConnected()) {
-//            this.drone.disconnect();
-//            updateConnectedButton(false);
-//        }
-//
-//        this.controlTower.unregisterDrone(this.drone);
-//        this.controlTower.disconnect();
-    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-    @Override
-    public void onDroneConnectionFailed(ConnectionResult result) {
-        alertUser("Connection Failed:" + result.getErrorMessage());
-        updateConnectedButton(this.drone.isConnected());
-    }
-
-    @Override
-    public void onDroneEvent(String event, Bundle extras) {
-
-        switch (event) {
-            case AttributeEvent.STATE_CONNECTED:
-                alertUser("Drone Connected");
-                updateConnectedButton(this.drone.isConnected());
-                break;
-
-            case AttributeEvent.STATE_DISCONNECTED:
-                alertUser("Drone Disconnected");
-                updateConnectedButton(this.drone.isConnected());
-                break;
-
-            default:
-                Log.i("DRONE_EVENT", event); //Uncomment to see events from the drone
-                break;
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public void onDroneServiceInterrupted(String errorMsg) {
-        updateConnectedButton(this.drone.isConnected());
-    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        Fragment frag = null;
 
-    @Override
-    public void onTowerConnected() {
-        alertUser("3DR Services Connected");
-        this.controlTower.registerDrone(this.drone, this.handler);
-        this.drone.registerDroneListener(this);
-        updateConnectedButton(this.drone.isConnected());
-    }
+        if (id == R.id.nav_connect) {
+            frag = new ConnectFragment();
+        } else if (id == R.id.nav_plot) {
+            frag = new PlotFragment();
+        } else if (id == R.id.nav_map) {
 
-    @Override
-    public void onTowerDisconnected() {
-        updateConnectedButton(this.drone.isConnected());
-        alertUser("3DR Service Interrupted");
-    }
+        } else if (id == R.id.nav_start) {
 
-    private void alertUser(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-        Log.d(TAG, message);
+        } else if (id == R.id.nav_settings) {
+//            frag = new Settings();
+        }
+
+
+        if (frag != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, frag);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

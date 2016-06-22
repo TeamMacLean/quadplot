@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_connect"
+            android:icon="@drawable/pin"
+            android:title="@string/connect" />
+        <item
+            android:id="@+id/nav_plot"
+            android:icon="@drawable/pin"
+            android:title="@string/add_edit_plot" />
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@drawable/map"
+            android:title="@string/view_in_map" />
+        <item
+            android:id="@+id/nav_start"
+            android:icon="@drawable/done"
+            android:title="@string/start_mission" />
+
+    </group>
+
+    <item android:title="@string/other">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/settings"
+                android:title="@string/settings" />
+        </menu>
+    </item>
+
+</menu>
