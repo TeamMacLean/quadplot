@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_plot) {
             frag = new PlotFragment();
         } else if (id == R.id.nav_map) {
-
+            frag = new MapPlotFragment();
         } else if (id == R.id.nav_start) {
 
         } else if (id == R.id.nav_settings) {
