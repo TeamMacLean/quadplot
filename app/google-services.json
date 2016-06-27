@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "532407977232",
+    "firebase_url": "https://quadplot-b1c72.firebaseio.com",
+    "project_id": "quadplot-b1c72",
+    "storage_bucket": "quadplot-b1c72.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532407977232:android:129e0b49bf8fc533",
+        "android_client_info": {
+          "package_name": "com.wookoouk.quadplot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "532407977232-er7al5jfqi4omdmkpm6743ku47rhaa6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wookoouk.quadplot",
+            "certificate_hash": "9A2CA4A02EF6354371AF7BAAC5A1A9CEC2BE3C8E"
+          }
+        },
+        {
+          "client_id": "532407977232-d5g139rmev2c68n8bqupt14oapf13gp6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCESB-EaVhhU7d2poNTmVe2uyG1-omBEWw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "532407977232-d5g139rmev2c68n8bqupt14oapf13gp6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
