@@ -58,7 +58,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     private final Map<String, Bundle> eventsBuffer = new LinkedHashMap<>(200);
     public static Drone drone;
     private static ControlTower controlTower;
-    private LocalBroadcastManager lbm;
+//    private LocalBroadcastManager lbm;
 
     static boolean GetIsUSBConnected() {
         return USBConnected;
@@ -101,7 +101,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
         controlTower = new ControlTower(context);
         drone = new Drone(); // Later version will use context
-        lbm = LocalBroadcastManager.getInstance(context);
+//        lbm = LocalBroadcastManager.getInstance(context);
 
 //        final IntentFilter intentFilter = new IntentFilter();
 //        intentFilter.addAction(ACTION_TOGGLE_DRONE_CONNECTION);
@@ -131,9 +131,9 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         Toast.makeText(getApplicationContext(), "Connection failed: " + errorMsg,
                 Toast.LENGTH_LONG).show();
 
-        lbm.sendBroadcast(new Intent(ACTION_DRONE_CONNECTION_FAILED)
-                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_CODE, result.getErrorCode())
-                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_MESSAGE, result.getErrorMessage()));
+//        lbm.sendBroadcast(new Intent(ACTION_DRONE_CONNECTION_FAILED)
+//                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_CODE, result.getErrorCode())
+//                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_MESSAGE, result.getErrorMessage()));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         drone.registerDroneListener(this);
 
 
-        Toast.makeText(getApplicationContext(), "Tower Connected",
+        Toast.makeText(getApplicationContext(), "ControlTower Connected",
                 Toast.LENGTH_LONG).show();
 
         SetUSBConnected(true);
@@ -190,7 +190,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     @Override
     public void onTowerDisconnected() {
         SetUSBConnected(false);
-        Toast.makeText(getApplicationContext(), "Tower Disconnected",
+        Toast.makeText(getApplicationContext(), "ControlTower Disconnected",
                 Toast.LENGTH_LONG).show();
     }
 }
