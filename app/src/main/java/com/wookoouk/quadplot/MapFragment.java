@@ -44,7 +44,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.getMapAsync(this); //this is important
         mapView.setPadding(5, 5, 5, 5);
 
-//        mapView.setMapType(mapView.MAP_TYPE_SATELLITE);
 
         return v;
     }
@@ -63,7 +62,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            for (Plot p : QuadPlot.plots) {
+            for (Plot p: QuadPlot.plots) {
 
                 String name = p.getName();
 

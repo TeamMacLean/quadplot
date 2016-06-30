@@ -1,18 +1,12 @@
 package com.wookoouk.quadplot;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,57 +20,55 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class PlotFragment extends Fragment {
+class PlotFragment extends Fragment {
     private ListView mListView;
     private PlotAdapter adapter;
-    private Location currentLocation;
     private static final int MinimumGPSAccuracy = 150; //lower is better
     private TextView gpsStatus = null;
 
     //    }
-    private void initGPS() {
-
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-
-            public void onLocationChanged(Location location) {
-//                gpsText.setText(getText(R.string.gps_label) + " " + location.getAccuracy());
-                currentLocation = location;
-
-
-                if (gpsStatus != null) {
-                    gpsStatus.setText("GPS: 68% accurate to " + Util.MtoF(location.getAccuracy()) + " Feet");
-                }
-
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("ERROR", "COULD NOT USE GPS");
-            if (gpsStatus != null) {
-                gpsStatus.setText("Could not connect to GPS!");
-            }
-            return;
-        }
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } catch (SecurityException se) {
-            se.printStackTrace();
-        }
-    }
+//    private void initGPS() {
+//
+//        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+//        LocationListener locationListener = new LocationListener() {
+//
+//            public void onLocationChanged(Location location) {
+////                gpsText.setText(getText(R.string.gps_label) + " " + location.getAccuracy());
+//                currentLocation = location;
+//
+//
+//                if (gpsStatus != null) {
+//                    gpsStatus.setText("GPS: 68% accurate to " + Util.MtoF(location.getAccuracy()) + " Feet");
+//                }
+//
+//            }
+//
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//            }
+//
+//            public void onProviderEnabled(String provider) {
+//            }
+//
+//            public void onProviderDisabled(String provider) {
+//            }
+//        };
+//        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            Log.d("ERROR", "COULD NOT USE GPS");
+//            if (gpsStatus != null) {
+//                gpsStatus.setText("Could not connect to GPS!");
+//            }
+//            return;
+//        }
+//        try {
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//        } catch (SecurityException se) {
+//            se.printStackTrace();
+//        }
+//    }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        initGPS();
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
@@ -91,11 +83,8 @@ public class PlotFragment extends Fragment {
         int height = seek.getProgress();
 
 
-        QuadPlot.plots.add(new Plot(height, currentLocation));
+        QuadPlot.plots.add(new Plot(height, QuadPlot.getCurrentLocation()));
 
-//        QuadPlot.listItems.add(QuadPlot.listItems.size(), "Plot " + (QuadPlot.locations.size()));
-//                MainActivity.listItems.add(MainActivity.listItems.size() - 1, "Plot " + (MainActivity.locations.size() + 1));
-//        QuadPlot.locations.add(currentLocation);
         adapter.notifyDataSetChanged();
 
     }
@@ -149,10 +138,25 @@ public class PlotFragment extends Fragment {
 
         gpsStatus = (TextView) view.findViewById(R.id.gps_status);
 
+
+        QuadPlot.addLoadionListener(new LocationChangedListener() {
+            @Override
+            public void onLocationChanged() {
+                if (gpsStatus != null) {
+                    gpsStatus.setText("GPS: 68% accurate to " + Util.MtoF(QuadPlot.getCurrentLocation().getAccuracy()) + " Feet");
+                }
+            }
+        });
+
+        //TODO keep gps status uptodate
+
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View clickView) {
+
+                Location currentLocation = QuadPlot.getCurrentLocation();
 
                 if (currentLocation != null) {
                     if (Util.MtoF(currentLocation.getAccuracy()) < MinimumGPSAccuracy) {

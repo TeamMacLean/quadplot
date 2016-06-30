@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
@@ -30,34 +29,34 @@ public class ConnectFragment extends Fragment {
             }
         });
 
-        final ImageView iv = (ImageView) view.findViewById(R.id.tx_image);
+//        final ImageView iv = (ImageView) view.findViewById(R.id.tx_image);
 
-        if (QuadPlot.GetIsUSBConnected()) {
-            iv.setVisibility(View.INVISIBLE);
-        } else {
-            iv.setVisibility(View.VISIBLE);
-        }
+//        if (QuadPlot.GetIsUSBConnected()) {
+//            iv.setVisibility(View.INVISIBLE);
+//        } else {
+//            iv.setVisibility(View.VISIBLE);
+//        }
 
-        QuadPlot.addUSBConnectionListener(new USBConnectionChangedListener() {
-            @Override
-            public void onUSBConnectionChanged() {
-
-                if (QuadPlot.GetIsUSBConnected()) {
-                    iv.setVisibility(View.INVISIBLE);
-                } else {
-                    iv.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
+//        QuadPlot.addUSBConnectionListener(new USBConnectionChangedListener() {
+//            @Override
+//            public void onUSBConnectionChanged() {
+//
+//                if (QuadPlot.GetIsUSBConnected()) {
+//                    iv.setVisibility(View.INVISIBLE);
+//                } else {
+//                    iv.setVisibility(View.VISIBLE);
+//                }
+//
+//            }
+//        });
 
         QuadPlot.addDroneConnectionListener(new DroneConnectionChangedListener() {
             @Override
             public void onDroneConnectionChanged() {
-                if (QuadPlot.GetIsDroneConnected()) {
-                    connectButton.setImageResource(R.drawable.connect);
+                if (QuadPlot.getIsDroneConnected()) {
+                    connectButton.setImageResource(R.drawable.connected);
                 } else {
-                    connectButton.setImageResource(R.drawable.disconnect);
+                    connectButton.setImageResource(R.drawable.disconnected);
                 }
 
             }

@@ -29,6 +29,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        //put in first fragment:
+        Fragment frag = new IntroFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, frag);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     @Override
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_map) {
             frag = new MapFragment();
         } else if (id == R.id.nav_start) {
-
+            frag = new UploadFragment();
         } else if (id == R.id.nav_settings) {
 //            frag = new Settings();
         }
@@ -90,4 +99,17 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        QuadPlot.StopEvents();
+    }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        QuadPlot.StopEvents();
+//    }
 }

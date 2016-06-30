@@ -2,11 +2,14 @@ package com.wookoouk.quadplot;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,62 +20,67 @@ import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
-import com.o3dr.services.android.lib.util.Utils;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-interface USBConnectionChangedListener {
-    void onUSBConnectionChanged();
-}
 
 interface DroneConnectionChangedListener {
     void onDroneConnectionChanged();
 }
 
+interface LocationChangedListener {
+    void onLocationChanged();
+}
+
 public class QuadPlot extends Application implements DroneListener, TowerListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    static ArrayList<Plot> plots = new ArrayList<>();
-//    static ArrayList<String> listItems = new ArrayList<>();
-//    static ArrayList<Location> locations = new ArrayList<>();
 
-    private static Boolean USBConnected = false;
+    static ArrayList<Plot> plots = new ArrayList<>();
     private static Boolean DroneConnected = false;
 
-    private static List<USBConnectionChangedListener> usbListeners = new ArrayList<USBConnectionChangedListener>();
-    private static List<DroneConnectionChangedListener> droneListeners = new ArrayList<DroneConnectionChangedListener>();
+    private static List<DroneConnectionChangedListener> droneListeners = new ArrayList<>();
+    private static List<LocationChangedListener> LocationListeners = new ArrayList<>();
 
-    private static final String ACTION_DRONE_CONNECTION_FAILED = Utils.PACKAGE_NAME
-            + ".ACTION_DRONE_CONNECTION_FAILED";
-    private static final String EXTRA_CONNECTION_FAILED_ERROR_CODE = "extra_connection_failed_error_code";
-    private static final String EXTRA_CONNECTION_FAILED_ERROR_MESSAGE = "extra_connection_failed_error_message";
-    public static final long EVENTS_DISPATCHING_PERIOD = 200L; //MS
-    public static final long DELAY_TO_DISCONNECTION = 1000L; // ms
     static final int DEFAULT_USB_BAUD_RATE = 57600;
-//    private final List<ApiListener> apiListeners = new ArrayList<ApiListener>();
+    static int baseHeight = 20;
+    private static Location currentLocation;
 
     private final Handler handler = new Handler();
-    private final Map<String, Bundle> eventsBuffer = new LinkedHashMap<>(200);
     public static Drone drone;
     private static ControlTower controlTower;
-//    private LocalBroadcastManager lbm;
 
-    static boolean GetIsUSBConnected() {
-        return USBConnected;
-    }
-
-    static boolean GetIsDroneConnected() {
+    static boolean getIsDroneConnected() {
         return DroneConnected;
     }
 
-    private static void SetUSBConnected(boolean value) {
-        USBConnected = value;
+    private void initGPS() {
 
-        for (USBConnectionChangedListener l : usbListeners) {
-            l.onUSBConnectionChanged();
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                SetCurrentLocation(location);
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("ERROR", "COULD NOT USE GPS");
+            return;
+        }
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        } catch (SecurityException se) {
+            se.printStackTrace();
         }
     }
 
@@ -84,12 +92,21 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         }
     }
 
-    static void addUSBConnectionListener(USBConnectionChangedListener l) {
-        usbListeners.add(l);
+    private static void SetCurrentLocation(Location loc) {
+        currentLocation = loc;
+
+        for (LocationChangedListener l : LocationListeners) {
+            l.onLocationChanged();
+        }
     }
+
 
     static void addDroneConnectionListener(DroneConnectionChangedListener l) {
         droneListeners.add(l);
+    }
+
+    static void addLoadionListener(LocationChangedListener l) {
+        LocationListeners.add(l);
     }
 
 
@@ -100,20 +117,25 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         final Context context = getApplicationContext();
 
         controlTower = new ControlTower(context);
-        drone = new Drone(); // Later version will use context
-//        lbm = LocalBroadcastManager.getInstance(context);
-
-//        final IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(ACTION_TOGGLE_DRONE_CONNECTION);
-//        registerReceiver(broadcastReceiver, intentFilter);
-
-
-        //TODO
+        drone = new Drone(this); // Later version will use context
         controlTower.connect(this);
+
+        initGPS();
+
+//        try {
+//            ArrayList<Plot> testPlots = Util.loadPlots(PreferenceManager.getDefaultSharedPreferences(this));
+//            if (testPlots != null) {
+//                plots = testPlots;
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     @Override
     public void onTerminate() {
+        Log.d(TAG, "ON TERMINATE");
         super.onTerminate();
 
         if (drone.isConnected()) {
@@ -123,6 +145,13 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
         controlTower.unregisterDrone(drone);
         controlTower.disconnect();
+
+
+//        try {
+//            Util.storePlots(PreferenceManager.getDefaultSharedPreferences(this), plots);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -184,13 +213,17 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         Toast.makeText(getApplicationContext(), "ControlTower Connected",
                 Toast.LENGTH_LONG).show();
 
-        SetUSBConnected(true);
+//        SetUSBConnected(true);
     }
 
     @Override
     public void onTowerDisconnected() {
-        SetUSBConnected(false);
+//        SetUSBConnected(false);
         Toast.makeText(getApplicationContext(), "ControlTower Disconnected",
                 Toast.LENGTH_LONG).show();
+    }
+
+    static Location getCurrentLocation() {
+        return currentLocation;
     }
 }

@@ -6,7 +6,6 @@ public class Plot {
 
     private int height;
     private Location location;
-//    private String name;
 
     Plot(int height, Location location) {
 //        this.name = name;
@@ -27,5 +26,13 @@ public class Plot {
 
     public int getHeight() {
         return height;
+    }
+
+    public double getAlt() {
+
+        return height + QuadPlot.baseHeight;
+
+
+
     }
 }

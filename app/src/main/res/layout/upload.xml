@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <CheckBox
+        android:id="@+id/checkBox_plots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Plots Added"
+        android:checked="false"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_below="@+id/checkBox_connected"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/upload_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:id="@+id/checkBox_connected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Drone Connected"
+        android:checked="false"
+        android:clickable="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:duplicateParentState="false"
+        android:focusable="false" />
+</RelativeLayout>
