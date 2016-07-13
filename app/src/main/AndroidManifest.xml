@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wookoouk.quadplot">
 
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--<uses-feature android:name="android.hardware.usb.host" />-->
     <application
         android:name=".QuadPlot"
         android:allowBackup="true"
@@ -23,5 +26,5 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 </manifest>

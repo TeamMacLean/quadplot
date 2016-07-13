@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -74,7 +73,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
             }
         };
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("ERROR", "COULD NOT USE GPS");
+            Toast.makeText(this, "COULD NOT USE GPS", Toast.LENGTH_LONG).show();
             return;
         }
         try {
@@ -121,6 +120,11 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         controlTower.connect(this);
 
         initGPS();
+        try {
+            Util.loadPlots(this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 //        try {
 //            ArrayList<Plot> testPlots = Util.loadPlots(PreferenceManager.getDefaultSharedPreferences(this));
@@ -160,6 +164,8 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         Toast.makeText(getApplicationContext(), "Connection failed: " + errorMsg,
                 Toast.LENGTH_LONG).show();
 
+        SetDroneConnected(false);
+
 //        lbm.sendBroadcast(new Intent(ACTION_DRONE_CONNECTION_FAILED)
 //                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_CODE, result.getErrorCode())
 //                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_MESSAGE, result.getErrorMessage()));
@@ -167,16 +173,27 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
     @Override
     public void onDroneEvent(String event, Bundle extras) {
+
         switch (event) {
+            case AttributeEvent.MISSION_UPDATED: {
+                Toast.makeText(getApplicationContext(), "MISSION UPDATED", Toast.LENGTH_LONG);
+                break;
+            }
+//
+            case AttributeEvent.MISSION_SENT: {
+                Toast.makeText(getApplicationContext(), "MISSION WAS SENT!!!", Toast.LENGTH_LONG);
+                break;
+            }
+//
             case AttributeEvent.STATE_CONNECTED: {
                 SetDroneConnected(true);
-
                 Toast.makeText(getApplicationContext(), "Drone Connected",
                         Toast.LENGTH_LONG).show();
 
                 break;
             }
 
+//
             case AttributeEvent.STATE_DISCONNECTED: {
                 SetDroneConnected(false);
 
@@ -185,7 +202,44 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
                 break;
             }
-
+//
+//            case AttributeEvent.STATE_VEHICLE_MODE:
+//                Toast.makeText(getApplicationContext(), "STATE_VEHICLE_MODE",
+//                        Toast.LENGTH_LONG).show();
+//                break;
+//
+//            case AttributeEvent.TYPE_UPDATED:
+////                Toast.makeText(getApplicationContext(), "TYPE_UPDATED",
+////                        Toast.LENGTH_LONG).show();
+////                Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
+////                if (newDroneType.getDroneType() != this.droneType) {
+////                    this.droneType = newDroneType.getDroneType();
+////                    updateVehicleModesForType(this.droneType);
+////                }
+//                break;
+//
+//
+//            case AttributeEvent.SPEED_UPDATED:
+////                Toast.makeText(getApplicationContext(), "SPEED_UPDATED",
+////                        Toast.LENGTH_LONG).show();
+////                updateAltitude();
+////                updateSpeed();
+//                break;
+//
+//            case AttributeEvent.HOME_UPDATED:
+////                Toast.makeText(getApplicationContext(), "HOME_UPDATED",
+////                        Toast.LENGTH_LONG).show();
+//                break;
+//
+//            case AttributeEvent.STATE_UPDATED:
+////                Toast.makeText(getApplicationContext(), "STATE_UPDATED",
+////                        Toast.LENGTH_LONG).show();
+//                break;
+//            case AttributeEvent.STATE_ARMING:
+////                Toast.makeText(getApplicationContext(), "STATE_ARMING",
+////                        Toast.LENGTH_LONG).show();
+//                break;
+//
             default: {
                 break;
             }
@@ -196,7 +250,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     @Override
     public void onDroneServiceInterrupted(String errorMsg) {
         controlTower.unregisterDrone(drone);
-
+        SetDroneConnected(false);
         if (!TextUtils.isEmpty(errorMsg))
             Log.e(TAG, errorMsg);
     }

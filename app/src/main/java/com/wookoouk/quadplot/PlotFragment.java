@@ -19,6 +19,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
 
 class PlotFragment extends Fragment {
     private ListView mListView;
@@ -82,8 +84,14 @@ class PlotFragment extends Fragment {
 
         int height = seek.getProgress();
 
-
         QuadPlot.plots.add(new Plot(height, QuadPlot.getCurrentLocation()));
+
+
+        try {
+            Util.storePlots(getContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         adapter.notifyDataSetChanged();
 

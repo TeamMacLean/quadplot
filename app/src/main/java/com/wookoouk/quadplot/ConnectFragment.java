@@ -70,10 +70,9 @@ public class ConnectFragment extends Fragment {
             QuadPlot.drone.disconnect();
         } else {
             Bundle extraParams = new Bundle();
-            extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, QuadPlot.DEFAULT_USB_BAUD_RATE); // Set default baud rate to 57600
-
-            ConnectionParameter connectionParams = new ConnectionParameter(0, extraParams, null);
-            QuadPlot.drone.connect(connectionParams);
+            extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, QuadPlot.DEFAULT_USB_BAUD_RATE);
+            final ConnectionParameter connParams = new ConnectionParameter(ConnectionType.TYPE_USB, extraParams, null);
+            QuadPlot.drone.connect(connParams);
         }
     }
 }
