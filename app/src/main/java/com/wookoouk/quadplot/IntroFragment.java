@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class IntroFragment extends Fragment {
+class IntroFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.intro, container, false);
-        return view;
+        return inflater.inflate(R.layout.intro, container, false);
     }
 }

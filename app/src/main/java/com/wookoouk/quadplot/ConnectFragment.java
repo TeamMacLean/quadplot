@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 
-public class ConnectFragment extends Fragment {
+class ConnectFragment extends Fragment {
 
 
     @Override
@@ -28,27 +28,6 @@ public class ConnectFragment extends Fragment {
                 onBtnConnectTap();
             }
         });
-
-//        final ImageView iv = (ImageView) view.findViewById(R.id.tx_image);
-
-//        if (QuadPlot.GetIsUSBConnected()) {
-//            iv.setVisibility(View.INVISIBLE);
-//        } else {
-//            iv.setVisibility(View.VISIBLE);
-//        }
-
-//        QuadPlot.addUSBConnectionListener(new USBConnectionChangedListener() {
-//            @Override
-//            public void onUSBConnectionChanged() {
-//
-//                if (QuadPlot.GetIsUSBConnected()) {
-//                    iv.setVisibility(View.INVISIBLE);
-//                } else {
-//                    iv.setVisibility(View.VISIBLE);
-//                }
-//
-//            }
-//        });
 
         QuadPlot.addDroneConnectionListener(new DroneConnectionChangedListener() {
             @Override
