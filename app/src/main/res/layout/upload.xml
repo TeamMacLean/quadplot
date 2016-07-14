@@ -5,18 +5,6 @@
     android:orientation="vertical">
 
 
-    <CheckBox
-        android:id="@+id/checkBox_plots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Plots Added"
-        android:checked="false"
-        android:clickable="false"
-        android:focusable="false"
-        android:layout_below="@+id/checkBox_connected"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <Button
         android:id="@+id/upload_button"
         style="@style/Widget.AppCompat.Button.Colored"
@@ -27,16 +15,36 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <CheckBox
-        android:id="@+id/checkBox_connected"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="@dimen/global_padding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Drone Connected"
-        android:checked="false"
-        android:clickable="false"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:duplicateParentState="false"
-        android:focusable="false" />
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/checkBox_plots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Plots Added"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_below="@+id/checkBox_connected"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <CheckBox
+            android:id="@+id/checkBox_connected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Drone Connected"
+            android:checked="false"
+            android:clickable="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:duplicateParentState="false"
+            android:focusable="false" />
+    </LinearLayout>
+
 </RelativeLayout>

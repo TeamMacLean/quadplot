@@ -2,37 +2,25 @@ package com.wookoouk.quadplot;
 
 import android.location.Location;
 
-public class Plot {
+class Plot {
 
-    private int height;
+    private double height;
     private Location location;
 
-    Plot(int height, Location location) {
-//        this.name = name;
+    Plot(double height, Location location) {
         this.height = height;
         this.location = location;
     }
 
     public String getName() {
-
         return "Plot" + QuadPlot.plots.indexOf(this);
-
-//        return name;
     }
 
-    public Location getLocation() {
+    Location getLocation() {
         return location;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
-    }
-
-    public double getAlt() {
-
-        return height + QuadPlot.baseHeight;
-
-
-
     }
 }

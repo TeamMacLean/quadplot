@@ -40,14 +40,14 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this); //this is important
         mapView.setPadding(5, 5, 5, 5);
-
-
         return v;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         if (QuadPlot.plots.size() > 0) {
 
@@ -89,18 +89,25 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        if (mapView != null) {
+            mapView.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (mapView != null) {
+            mapView.onPause();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
     }
 }

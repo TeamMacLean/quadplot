@@ -13,7 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -25,48 +25,8 @@ import org.json.JSONException;
 class PlotFragment extends Fragment {
     private ListView mListView;
     private PlotAdapter adapter;
-    private static final int MinimumGPSAccuracy = 150; //lower is better
-    private TextView gpsStatus = null;
 
-    //    }
-//    private void initGPS() {
-//
-//        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-//        LocationListener locationListener = new LocationListener() {
-//
-//            public void onLocationChanged(Location location) {
-////                gpsText.setText(getText(R.string.gps_label) + " " + location.getAccuracy());
-//                currentLocation = location;
-//
-//
-//                if (gpsStatus != null) {
-//                    gpsStatus.setText("GPS: 68% accurate to " + Util.MtoF(location.getAccuracy()) + " Feet");
-//                }
-//
-//            }
-//
-//            public void onStatusChanged(String provider, int status, Bundle extras) {
-//            }
-//
-//            public void onProviderEnabled(String provider) {
-//            }
-//
-//            public void onProviderDisabled(String provider) {
-//            }
-//        };
-//        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            Log.d("ERROR", "COULD NOT USE GPS");
-//            if (gpsStatus != null) {
-//                gpsStatus.setText("Could not connect to GPS!");
-//            }
-//            return;
-//        }
-//        try {
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//        } catch (SecurityException se) {
-//            se.printStackTrace();
-//        }
-//    }
+    private TextView gpsStatus = null;
 
 
     @Override
@@ -78,11 +38,9 @@ class PlotFragment extends Fragment {
 
     private void addPlot(View v) {
 
-        //TODO try and get crop height from View v
-
         SeekBar seek = (SeekBar) v.findViewById(R.id.crop_seekBar);
 
-        int height = seek.getProgress();
+        int height = seek.getProgress() / 10;
 
         QuadPlot.plots.add(new Plot(height, QuadPlot.getCurrentLocation()));
 
@@ -121,12 +79,12 @@ class PlotFragment extends Fragment {
                     }
                 }
             });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //nothing
-                }
-            });
+//            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//            //nothing
+//                }
+//            });
             builder.create().show();
         } else {
             Toast.makeText(getContext(), "No plots to remove", Toast.LENGTH_LONG).show();
@@ -151,12 +109,10 @@ class PlotFragment extends Fragment {
             @Override
             public void onLocationChanged() {
                 if (gpsStatus != null) {
-                    gpsStatus.setText("GPS: 68% accurate to " + Util.MtoF(QuadPlot.getCurrentLocation().getAccuracy()) + " Feet");
+                    gpsStatus.setText("GPS: 68% accurate to " + QuadPlot.getCurrentLocation().getAccuracy() + getContext().getString(R.string.distance_unit_short));
                 }
             }
         });
-
-        //TODO keep gps status uptodate
 
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -167,9 +123,9 @@ class PlotFragment extends Fragment {
                 Location currentLocation = QuadPlot.getCurrentLocation();
 
                 if (currentLocation != null) {
-                    if (Util.MtoF(currentLocation.getAccuracy()) < MinimumGPSAccuracy) {
+                    if (currentLocation.getAccuracy() < QuadPlot.MINIMUM_GPS_ACCURACY) {
 
-                        final View alertView = inflater.inflate(R.layout.crop_height, null);
+                        final View alertView = inflater.inflate(R.layout.crop_height, new LinearLayout(getContext()), false);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -179,7 +135,10 @@ class PlotFragment extends Fragment {
                         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                                inM.setText(i + " feet");
+
+                                double converted = i / 10;
+
+                                inM.setText("" + converted + R.string.distance_unit_short);
                             }
 
                             @Override
@@ -199,21 +158,20 @@ class PlotFragment extends Fragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         addPlot(alertView);
                                     }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        //nothing
-                                    }
                                 });
+//                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//                                    }
+//                                });
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
                     } else {
-                        Snackbar.make(view, currentLocation.getAccuracy() + " of minimum " + MinimumGPSAccuracy, Snackbar.LENGTH_LONG)
+                        Snackbar.make(view, "Accuracy " + currentLocation.getAccuracy() + " of minimum " + QuadPlot.MINIMUM_GPS_ACCURACY, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
                 } else {
-                    Snackbar.make(view, "GPS Connecting...", Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, R.string.gps_connecting, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
 
@@ -223,14 +181,6 @@ class PlotFragment extends Fragment {
         adapter = new PlotAdapter(view.getContext(), R.layout.plot_row, QuadPlot.plots);
 
         mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });
-
 
         return view;
     }

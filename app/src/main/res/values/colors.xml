@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorGrey">#c1c5e3</color>
     <!--<color name="colorAccent">#0082EC</color>-->
     <color name="header_background">@color/colorPrimary</color>
 </resources>

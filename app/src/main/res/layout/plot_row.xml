@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipe"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="80dp"
+    android:id="@+id/swipe_layout_item">
     <!-- Bottom View Start-->
     <LinearLayout
-        android:id="@+id/bottom_wrapper"
         android:layout_width="160dp"
         android:layout_height="match_parent"
         android:background="@color/colorAccent"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:id="@+id/plot_delete_view">
         <!--What you want to show-->
         <ImageView
-            android:id="@+id/imageView4"
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:src="@drawable/delete"
-            android:tint="@color/colorPrimaryDark" />
+            android:tint="@color/colorPrimaryDark"
+            android:contentDescription="@string/delete" />
     </LinearLayout>
     <!-- Bottom View End-->
 
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        android:padding="10dp">
+        android:padding="@dimen/global_padding">
 
         <TextView
             android:id="@+id/plot_title"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/plot_height"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="16dp"

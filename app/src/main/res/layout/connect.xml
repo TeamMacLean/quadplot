@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/global_padding"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/tx_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"

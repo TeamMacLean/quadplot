@@ -44,12 +44,15 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     private static List<LocationChangedListener> LocationListeners = new ArrayList<>();
 
     static final int DEFAULT_USB_BAUD_RATE = 57600;
-    static int baseHeight = 20;
     private static Location currentLocation;
 
     private final Handler handler = new Handler();
     public static Drone drone;
     private static ControlTower controlTower;
+
+    static final int MINIMUM_GPS_ACCURACY = 600; //lower is better, min should be 4
+//    public int PLOT_HEIGHT_MIN = 1;
+//    public int PLOT_HEIGHT_MAX = 10;
 
     static boolean getIsDroneConnected() {
         return DroneConnected;
@@ -126,15 +129,6 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
             e.printStackTrace();
         }
 
-//        try {
-//            ArrayList<Plot> testPlots = Util.loadPlots(PreferenceManager.getDefaultSharedPreferences(this));
-//            if (testPlots != null) {
-//                plots = testPlots;
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     @Override
@@ -144,18 +138,17 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
         if (drone.isConnected()) {
             drone.disconnect();
-//            updateConnectedButton(false);
         }
 
         controlTower.unregisterDrone(drone);
         controlTower.disconnect();
 
+        try {
+            Util.storePlots(getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-//        try {
-//            Util.storePlots(PreferenceManager.getDefaultSharedPreferences(this), plots);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -163,12 +156,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         String errorMsg = result.getErrorMessage();
         Toast.makeText(getApplicationContext(), "Connection failed: " + errorMsg,
                 Toast.LENGTH_LONG).show();
-
         SetDroneConnected(false);
-
-//        lbm.sendBroadcast(new Intent(ACTION_DRONE_CONNECTION_FAILED)
-//                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_CODE, result.getErrorCode())
-//                .putExtra(EXTRA_CONNECTION_FAILED_ERROR_MESSAGE, result.getErrorMessage()));
     }
 
     @Override
@@ -179,12 +167,14 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
                 Toast.makeText(getApplicationContext(), "MISSION UPDATED", Toast.LENGTH_LONG);
                 break;
             }
-//
             case AttributeEvent.MISSION_SENT: {
-                Toast.makeText(getApplicationContext(), "MISSION WAS SENT!!!", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "MISSION WAS SENT", Toast.LENGTH_LONG);
                 break;
             }
-//
+            case AttributeEvent.MISSION_RECEIVED: {
+                Toast.makeText(getApplicationContext(), "MISSION WAS RECEIVED", Toast.LENGTH_LONG);
+                break;
+            }
             case AttributeEvent.STATE_CONNECTED: {
                 SetDroneConnected(true);
                 Toast.makeText(getApplicationContext(), "Drone Connected",
@@ -192,8 +182,6 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
                 break;
             }
-
-//
             case AttributeEvent.STATE_DISCONNECTED: {
                 SetDroneConnected(false);
 
@@ -202,44 +190,6 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
                 break;
             }
-//
-//            case AttributeEvent.STATE_VEHICLE_MODE:
-//                Toast.makeText(getApplicationContext(), "STATE_VEHICLE_MODE",
-//                        Toast.LENGTH_LONG).show();
-//                break;
-//
-//            case AttributeEvent.TYPE_UPDATED:
-////                Toast.makeText(getApplicationContext(), "TYPE_UPDATED",
-////                        Toast.LENGTH_LONG).show();
-////                Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
-////                if (newDroneType.getDroneType() != this.droneType) {
-////                    this.droneType = newDroneType.getDroneType();
-////                    updateVehicleModesForType(this.droneType);
-////                }
-//                break;
-//
-//
-//            case AttributeEvent.SPEED_UPDATED:
-////                Toast.makeText(getApplicationContext(), "SPEED_UPDATED",
-////                        Toast.LENGTH_LONG).show();
-////                updateAltitude();
-////                updateSpeed();
-//                break;
-//
-//            case AttributeEvent.HOME_UPDATED:
-////                Toast.makeText(getApplicationContext(), "HOME_UPDATED",
-////                        Toast.LENGTH_LONG).show();
-//                break;
-//
-//            case AttributeEvent.STATE_UPDATED:
-////                Toast.makeText(getApplicationContext(), "STATE_UPDATED",
-////                        Toast.LENGTH_LONG).show();
-//                break;
-//            case AttributeEvent.STATE_ARMING:
-////                Toast.makeText(getApplicationContext(), "STATE_ARMING",
-////                        Toast.LENGTH_LONG).show();
-//                break;
-//
             default: {
                 break;
             }
@@ -257,22 +207,15 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
 
     @Override
     public void onTowerConnected() {
-
         drone.unregisterDroneListener(this);
-
         controlTower.registerDrone(drone, handler);
         drone.registerDroneListener(this);
-
-
         Toast.makeText(getApplicationContext(), "ControlTower Connected",
                 Toast.LENGTH_LONG).show();
-
-//        SetUSBConnected(true);
     }
 
     @Override
     public void onTowerDisconnected() {
-//        SetUSBConnected(false);
         Toast.makeText(getApplicationContext(), "ControlTower Disconnected",
                 Toast.LENGTH_LONG).show();
     }

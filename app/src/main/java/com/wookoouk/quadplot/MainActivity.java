@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -30,13 +31,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        //put in first fragment:
-        Fragment frag = new IntroFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, frag);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        if (savedInstanceState == null) {
+            Fragment frag = new IntroFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, frag);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
 
     }
 
@@ -50,10 +51,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment frag = null;
 
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity
             frag = new Settings();
         }
 
-
         if (frag != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, frag);
@@ -77,15 +75,9 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
         }
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 }

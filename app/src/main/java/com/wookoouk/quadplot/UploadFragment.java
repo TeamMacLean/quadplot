@@ -63,17 +63,13 @@ class UploadFragment extends Fragment {
                     } else {
                         Toast.makeText(getContext(), "No plots defined", Toast.LENGTH_LONG).show();
                     }
-
                 } else {
                     Toast.makeText(getContext(), "No drone attached", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
-
         return view;
-//        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     private Mission createMission() {
@@ -90,13 +86,11 @@ class UploadFragment extends Fragment {
 
         for (Plot p : QuadPlot.plots) {
             Waypoint waypoint = new Waypoint();
-//            double alt = p.getAlt();
             double alt = p.getHeight();
             waypoint.setCoordinate(new LatLongAlt(p.getLocation().getLatitude(), p.getLocation().getLongitude(),
                     (float) alt));
             currentMission.addMissionItem(waypoint);
         }
-
 
         //return to launch
         ReturnToLaunch rtl = new ReturnToLaunch();
