@@ -1,33 +1,21 @@
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <PreferenceCategory
-        android:title="Settings">
-
-        <CheckBoxPreference
-            android:key="checkbox_preference"
-            android:title="title"
-            android:summary="summary" />
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+        <ListPreference
+            android:defaultValue="10"
+            android:entries="@array/takeoff_heights"
+            android:entryValues="@array/takeoff_heights_values"
+            android:key="takeoff_height"
+            android:summary="The height to climb to as part of the take off"
+            android:title="Takeoff Height (Meters)" />
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/base_heights"
+            android:entryValues="@array/base_heights_values"
+            android:key="base_height"
+            android:summary="The height to fly above the plots in meters"
+            android:title="Base Height (Meters)" />
     </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="title">
-
-        <EditTextPreference
-            android:key="edittext_preference"
-            android:title="title"
-            android:summary="summary"
-            android:dialogTitle="dialogTitle" />
-
-        <!--<ListPreference-->
-            <!--android:key="list_preference"-->
-            <!--android:title="@string/title_list_preference"-->
-            <!--android:summary="@string/summary_list_preference"-->
-            <!--android:entries="@array/entries_list_preference"-->
-            <!--android:entryValues="@array/entryvalues_list_preference"-->
-            <!--android:dialogTitle="@string/dialog_title_list_preference" />-->
-
-    </PreferenceCategory>
-
 </PreferenceScreen>
+
+
+    <!--Base height--><!--Speed?--><!--Wait at plot?-->

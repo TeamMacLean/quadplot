@@ -61,7 +61,11 @@ class PlotAdapter extends ArrayAdapter<Plot> {
         Plot plot = data.get(position);
 
         holder.textView1.setText(plot.getName());
-        holder.textView2.setText("Crop Height: " + plot.getHeight() + getContext().getString(R.string.distance_unit_short));
+
+        String plotHeightString = plot.getPlotHeight() + getContext().getString(R.string.distance_unit_short);
+        String totalHeightString = plot.getTotalHeight(getContext()) + getContext().getString(R.string.distance_unit_short);
+
+        holder.textView2.setText("Crop Height: " + plotHeightString + ", Total Height: " + totalHeightString);
 
         return row;
     }

@@ -1,5 +1,7 @@
 package com.wookoouk.quadplot;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +31,13 @@ class PlotFragment extends Fragment {
 
     private TextView gpsStatus = null;
 
+    private Context mContext;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,13 +50,13 @@ class PlotFragment extends Fragment {
 
         SeekBar seek = (SeekBar) v.findViewById(R.id.crop_seekBar);
 
-        int height = seek.getProgress() / 10;
+        double height = seek.getProgress() / 10.0;
 
         QuadPlot.plots.add(new Plot(height, QuadPlot.getCurrentLocation()));
 
 
         try {
-            Util.storePlots(getContext());
+            Util.storePlots(mContext);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -66,7 +76,7 @@ class PlotFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (QuadPlot.plots.size() > 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Remove all plots");
             builder.setMessage("Are you sure?");
 
@@ -79,15 +89,9 @@ class PlotFragment extends Fragment {
                     }
                 }
             });
-//            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialogInterface, int i) {
-//            //nothing
-//                }
-//            });
             builder.create().show();
         } else {
-            Toast.makeText(getContext(), "No plots to remove", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "No plots to remove", Toast.LENGTH_LONG).show();
         }
 
 
@@ -109,7 +113,7 @@ class PlotFragment extends Fragment {
             @Override
             public void onLocationChanged() {
                 if (gpsStatus != null) {
-                    gpsStatus.setText("GPS: 68% accurate to " + QuadPlot.getCurrentLocation().getAccuracy() + getContext().getString(R.string.distance_unit_short));
+                    gpsStatus.setText("GPS: 68% accurate to " + (int) QuadPlot.getCurrentLocation().getAccuracy() + mContext.getString(R.string.distance_unit_short)); //TODO
                 }
             }
         });
@@ -125,9 +129,9 @@ class PlotFragment extends Fragment {
                 if (currentLocation != null) {
                     if (currentLocation.getAccuracy() < QuadPlot.MINIMUM_GPS_ACCURACY) {
 
-                        final View alertView = inflater.inflate(R.layout.crop_height, new LinearLayout(getContext()), false);
+                        final View alertView = inflater.inflate(R.layout.crop_height, new LinearLayout(mContext), false);
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
                         final TextView inM = (TextView) alertView.findViewById(R.id.height);
 
@@ -136,9 +140,9 @@ class PlotFragment extends Fragment {
                             @Override
                             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-                                double converted = i / 10;
+                                double converted = i / 10.0;
 
-                                inM.setText("" + converted + R.string.distance_unit_short);
+                                inM.setText("" + converted + mContext.getString(R.string.distance_unit_short));
                             }
 
                             @Override
@@ -159,10 +163,6 @@ class PlotFragment extends Fragment {
                                         addPlot(alertView);
                                     }
                                 });
-//                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int id) {
-//                                    }
-//                                });
 
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
@@ -178,7 +178,7 @@ class PlotFragment extends Fragment {
             }
         });
 
-        adapter = new PlotAdapter(view.getContext(), R.layout.plot_row, QuadPlot.plots);
+        adapter = new PlotAdapter(mContext, R.layout.plot_row, QuadPlot.plots);
 
         mListView.setAdapter(adapter);
 

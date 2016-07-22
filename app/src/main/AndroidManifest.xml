@@ -4,7 +4,8 @@
 
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".QuadPlot"
         android:allowBackup="true"
@@ -15,6 +16,11 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDqr4j-3W6D-12F7vY4z4_VEb_RwFzKNS4" />
+
+        <activity
+            android:name="com.wookoouk.quadplot.Intro"
+            android:label="Quad Plot"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="com.wookoouk.quadplot.MainActivity"

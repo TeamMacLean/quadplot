@@ -2,6 +2,7 @@ package com.wookoouk.quadplot;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -51,12 +52,12 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     private static ControlTower controlTower;
 
     static final int MINIMUM_GPS_ACCURACY = 600; //lower is better, min should be 4
-//    public int PLOT_HEIGHT_MIN = 1;
-//    public int PLOT_HEIGHT_MAX = 10;
 
     static boolean getIsDroneConnected() {
         return DroneConnected;
     }
+
+    static boolean seenIntro = false;
 
     private void initGPS() {
 

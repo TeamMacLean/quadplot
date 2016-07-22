@@ -1,8 +1,10 @@
 package com.wookoouk.quadplot;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.drive.query.Query;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.MissionApi;
@@ -77,16 +80,20 @@ class UploadFragment extends Fragment {
         Mission currentMission = new Mission();
         currentMission.clear();
 
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        double takeoffHeight = Double.parseDouble(sp.getString("takeoff_height", "10")) * 1.0;
+
         //take off
         Takeoff takeOff = new Takeoff();
-        takeOff.setTakeoffAltitude(10); //TODO default option
+        takeOff.setTakeoffAltitude(takeoffHeight); //TODO default option
         currentMission.addMissionItem(takeOff);
 
         Toast.makeText(getContext(), "adding plots", Toast.LENGTH_SHORT).show();
 
         for (Plot p : QuadPlot.plots) {
             Waypoint waypoint = new Waypoint();
-            double alt = p.getHeight();
+            double alt = p.getTotalHeight(getContext());
             waypoint.setCoordinate(new LatLongAlt(p.getLocation().getLatitude(), p.getLocation().getLongitude(),
                     (float) alt));
             currentMission.addMissionItem(waypoint);
@@ -103,6 +110,24 @@ class UploadFragment extends Fragment {
     private void sendMissionToAPM() {
         Mission m = createMission();
         MissionApi.getApi(QuadPlot.drone).setMission(m, true); //test 2 (new)
+
+
+        MissionApi.getApi(QuadPlot.drone).startMission(true, true, new AbstractCommandListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(int executionError) {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+        });
     }
 
 
