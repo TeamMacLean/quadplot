@@ -59,9 +59,10 @@ class Util {
 
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    double height = (double) jsonObject.get("height");
-                    double lat = (double) jsonObject.get("latitude");
-                    double lon = (double) jsonObject.get("longitude");
+
+                    double height = jsonObject.getDouble("height");
+                    double lat = jsonObject.getDouble("latitude");
+                    double lon = jsonObject.getDouble("longitude");
 
                     Location loc = new Location("gps");
                     loc.setLatitude(lat);
@@ -76,7 +77,7 @@ class Util {
             }
         } catch (Throwable e) {
             Toast.makeText(context, "Could not load previous plots", Toast.LENGTH_SHORT).show();
-            Log.d("ERROR", "Could not load previous plots");
+            Log.d("ERROR", "Could not load previous plots," + e.getMessage());
         }
     }
 
@@ -90,7 +91,7 @@ class Util {
         return seenIntro;
     }
 
-    public static void hasSeenIntro(Context context, Boolean has) {
+    static void hasSeenIntro(Context context, Boolean has) {
 
         try {
             PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("seenIntro", has).apply();

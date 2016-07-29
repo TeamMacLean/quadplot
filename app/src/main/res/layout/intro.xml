@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Development Build"
+        android:text="@string/development_build"
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,5 +18,6 @@
         android:maxWidth="341dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="@string/logo" />
 </LinearLayout>

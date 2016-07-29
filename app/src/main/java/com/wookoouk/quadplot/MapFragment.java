@@ -13,6 +13,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
@@ -39,7 +41,6 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this); //this is important
-        mapView.setPadding(5, 5, 5, 5);
         return v;
     }
 
@@ -52,6 +53,14 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
         if (QuadPlot.plots.size() > 0) {
 
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            PolylineOptions polylineOptionsptions = new PolylineOptions();
+
+            int lineColor = ContextCompat.getColor(getContext(), R.color.colorAccent);
+            polylineOptionsptions.color(lineColor);
+            polylineOptionsptions.width(5);
+            polylineOptionsptions.visible(true);
+
 
             for (Plot p : QuadPlot.plots) {
 
@@ -67,6 +76,9 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
                 builder.include(loc);
                 Marker marker = googleMap.addMarker(markerOptions);
                 marker.showInfoWindow();
+
+
+                polylineOptionsptions.add(loc);
             }
 
             LatLngBounds bounds = builder.build();
@@ -74,17 +86,12 @@ class MapFragment extends Fragment implements OnMapReadyCallback {
             int padding = 0; // offset from edges of the map in pixels
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             googleMap.animateCamera(cu);
+
+            googleMap.addPolyline(polylineOptionsptions);
         }
 
     }
 
-
-    private static int convertToPixels(Context context, int nDP) {
-        final float conversionScale = context.getResources().getDisplayMetrics().density;
-
-        return (int) ((nDP * conversionScale) + 0.5f);
-
-    }
 
     @Override
     public void onResume() {

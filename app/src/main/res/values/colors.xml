@@ -7,12 +7,12 @@
     <!--<color name="colorAccent">#0082EC</color>-->
     <color name="header_background">@color/colorPrimary</color>
 
-    <color name="flat_orange">#FC6E51</color>
-    <color name="flat_yellow">#FFCE54</color>
-    <color name="flat_blue">#4FC1E9</color>
-    <color name="flat_mint">#48CFAD</color>
-    <color name="flat_green">#A0D468</color>
-    <color name="flat_purple">#AC92EC</color>
+    <color name="intro_flat_orange">#FC6E51</color>
+    <color name="intro_flat_yellow">#FFCE54</color>
+    <color name="intro_flat_blue">#4FC1E9</color>
+    <color name="intro_flat_mint">#48CFAD</color>
+    <color name="intro_flat_green">#A0D468</color>
+    <color name="intro_flat_purple">#AC92EC</color>
 
 
 </resources>

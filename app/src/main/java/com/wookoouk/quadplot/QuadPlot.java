@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -57,7 +58,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         return DroneConnected;
     }
 
-    static boolean seenIntro = false;
+//    static boolean seenIntro = false;
 
     private void initGPS() {
 
@@ -117,6 +118,7 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
     public void onCreate() {
         super.onCreate();
 
+        System.out.println("start onCreate");
         final Context context = getApplicationContext();
 
         controlTower = new ControlTower(context);
@@ -124,12 +126,13 @@ public class QuadPlot extends Application implements DroneListener, TowerListene
         controlTower.connect(this);
 
         initGPS();
+
         try {
             Util.loadPlots(this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        System.out.println("end onCreate");
     }
 
     @Override

@@ -13,5 +13,9 @@
     <string name="distance_unit">meter</string>
     <string name="distance_unit_multiple">meters</string>
     <string name="distance_unit_short">m</string>
+    <string name="logo">logo</string>
+    <string name="development_build">Development Build</string>
+    <string name="_0">0</string>
+    <string name="crop_height">Crop Height</string>
 
 </resources>

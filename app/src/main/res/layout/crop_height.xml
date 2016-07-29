@@ -8,14 +8,14 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Crop Height"
+        android:text="@string/crop_height"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
 
     <TextView
         android:id="@+id/height"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0" />
+        android:text="@string/_0" />
 
     <SeekBar
         android:id="@+id/crop_seekBar"

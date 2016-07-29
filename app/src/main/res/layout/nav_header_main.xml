@@ -9,6 +9,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
+        android:contentDescription="@string/logo"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/logo" />
@@ -16,7 +17,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
+        android:paddingEnd="0dp"
+        android:paddingStart="8dp"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 

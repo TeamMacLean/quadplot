@@ -18,19 +18,24 @@
             android:value="AIzaSyDqr4j-3W6D-12F7vY4z4_VEb_RwFzKNS4" />
 
         <activity
-            android:name="com.wookoouk.quadplot.Intro"
-            android:label="Quad Plot"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name="com.wookoouk.quadplot.MainActivity"
-            android:label="@string/app_name"
+            android:name="com.wookoouk.quadplot.Init"
+            android:label="init"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.wookoouk.quadplot.Intro"
+            android:label="Intro"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="com.wookoouk.quadplot.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
